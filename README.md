@@ -1,3 +1,14 @@
+#Clickyreact
+
+[Check the app](https://chandashrestha.github.io/ClickyReact/)
+
+## Project Brief
+
+-- This game created with React to test the memory of the users. 
+-- The user will click on the different images to increase their score without repeating to click the same image twice.
+-- The users score will be reset if the the user clicks on the same image twice and the game will end.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
