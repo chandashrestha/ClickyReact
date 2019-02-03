@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import Image from "./Image";
-import Footer from "./Footer";
 import images from "../images.json";
-
-//Modals
-import Instructions from "./modals/Instructions";
 
 class Page extends Component {
   constructor() {
@@ -18,65 +14,68 @@ class Page extends Component {
 
   onClick = id => {
     let { images, score, highScore } = this.state;
-    let newState = [];
+    let reorderedImages = [];
 
-    //Obtain the element of the clicked image
+    //find which picture id was clicked
     let clickedImg = images.filter(image => image.id === id);
 
+    //check if the picture was clicked before
     if (clickedImg[0].clicked) {
-      //Not unique, game over
-      //Reset all clicked states to false
-      newState = this.state.images.map(image => {
+      //this resets the game
+      reorderedImages = this.state.images.map(image => {
         image.clicked = false;
         return image;
       });
       score = 0;
-      alert("Game over!");
+      alert("YOU LOST");
     } else {
-      //Unique click. +1
-      newState = this.state.images.map(image => {
+      //score added by 1 and reorder the images
+      reorderedImages = this.state.images.map(image => {
         if (image.id === id) {
           image.clicked = !image.clicked;
-          //console.log("Id " + image.id + " is now " + image.clicked);
         }
         return image;
       });
       score++;
       if (score > highScore) highScore = score;
       if (score === 12) {
-        alert("YOU'RE WINNER!");
-        newState = this.state.images.map(image => {
+        alert("YOU WIN!");
+        reorderedImages = this.state.images.map(image => {
           image.clicked = false;
           return image;
         });
         score = 0;
       }
     }
-    this.setState({ images: newState, score, highScore });
-    this.randomize();
+    this.setState({ images: reorderedImages, score, highScore });
+    this.reorder();
   };
 
   componentDidMount() {
-    this.randomize();
+    this.reorder();
   }
 
-  randomize = () => {
+  //reorders the images
+  reorder = () => {
     let stateCopy = this.state.images;
-    let newState = [];
+    let reorderedImages = [];
+    //the for function is going through all 12 pictures
     for (let i = 0; stateCopy.length > 0; i++) {
-      //Yank a random image out of the state. Splice returns an array.
+      //splice is going to take the one of the pictures out
       let element = stateCopy.splice(
         Math.floor(Math.random() * stateCopy.length),
         1
       );
-      newState[i] = element[0];
+      //after all the 12 pictures are taken out 
+      reorderedImages[i] = element[0];
     }
-    this.setState({ images: newState });
+    this.setState({ images: reorderedImages });
   };
 
+  //
   render() {
-    const { images, score, highScore } = this.state;
-    const images = images.map(image => (
+    const { images, score } = this.state;
+    const img = images.map(image => (
       <Image
         key={image.id}
         id={image.id}
@@ -87,34 +86,24 @@ class Page extends Component {
     return (
       <div className="App">
         <header>
-          <nav className="navbar navbar-expand-md navbar-dark bg-dark">
+          <nav className="navbar navbar-expand-md navbar-light bg-light">
             <div className="container">
               <div className="row">
                 <div className="col-12 text-center">
-                  <h1 id="title" className="navbar-brand mx-auto">
-                    <i className="fab fa-react" style={{ color: "#00d8ff" }} />{" "}
-                    React Clicky: Dank Memes Edition
+                  <h1 id="title" className="navbar-brand">
+                    Click and remember what you clicked!!! Score: {score}
                   </h1>
                 </div>
                 <div className="w-100" />
-                <div className="col-6">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-block"
-                    data-toggle="modal"
-                    data-target="#instructions"
-                  >
-                    How to Play
-                  </button>
-                </div>
+                <div className="col-6" />
                 <div className="col-6">
                   <a
-                    href="https://github.com/misazander/shufflin"
+                    href="https://github.com/chandashrestha/ClickyReact"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <button className="btn btn-primary btn-block">
-                      GitHub Repo
+                    <button className="btn btn-danger">
+                      Click to go to Github!!
                     </button>
                   </a>
                 </div>
@@ -122,12 +111,8 @@ class Page extends Component {
             </div>
           </nav>
         </header>
-        <main className="container text-center">{images}</main>
+        <main className="container text-center">{img}</main>
         <div className="placeholder" />
-        <footer className="footer">
-          <Footer score={score} highScore={highScore} />
-        </footer>
-        <Instructions />
       </div>
     );
   }
